@@ -26,7 +26,6 @@ import { AuthService } from './user/auth.service';
     , UserModule, 
       PrismaModule, 
       AuthModule,
-      JwtStrategy,
   ],
   controllers: [AppController],
   providers: [AppService, PrismaService],

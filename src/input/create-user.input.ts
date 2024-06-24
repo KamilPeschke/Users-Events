@@ -9,19 +9,16 @@ export class CreateUserInput{
     }
 
     @Field()
-    @IsNotEmpty()
     @IsString()
     @MinLength(4)
     username: string;
 
     @Field()
-    @IsNotEmpty()
     @IsString()
     @MinLength(6)
     password: string;
 
     @Field()
-    @IsNotEmpty()
     @IsEmail()
     email: string;
 }

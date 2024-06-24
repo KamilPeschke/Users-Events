@@ -6,6 +6,8 @@ import { UseGuards } from '@nestjs/common';
 import { AuthGuardJwtGql } from 'src/auth/auth.guard.jwt.gql';
 import { AuthPayload } from 'src/auth/auth.payload';
 import { LoginUserInput } from 'src/input/login-user.input';
+import { CurrentUser } from './current-user.decorator';
+import { EditUserInput } from 'src/input/edit-user.input';
 
 @Resolver()
 export class UserResolver {
@@ -23,8 +25,15 @@ constructor(
     public findUserById(
         @Args('id', {type: () => Int})
         id: number):Promise<User>{
-        return this.authService.findUserById(id)
+            return this.authService.findUserById(id)
     }
+
+    @Query(() => User)
+    public findUserByEmail(
+        @Args('input', {type: () => String})
+        email: string):Promise<User>{
+            return this.authService.findUserByEmail(email)
+        }
 
     @Mutation(() => AuthPayload, {name: 'registerUser'})
     public async registerUser(
@@ -34,12 +43,25 @@ constructor(
         return this.authService.register(input);
     }
 
-    // @Query(() => AuthPayload, {name: 'login'})
-    // @UseGuards(AuthGuardJwtGql)
-    // public async login(
-    //     @Args('input',{type: () => LoginUserInput})
-    //     input: LoginUserInput):Promise<AuthPayload>{
+    @Mutation(() => AuthPayload, {name: 'login'})
+    public async login(
+        @Args('input')
+        input: LoginUserInput):Promise<AuthPayload>{
+           return this.authService.login(input);
+    }
 
-    //     return this.authService.validateUser(input);
-    // }
+    @Query(() => User)
+    @UseGuards(AuthGuardJwtGql)
+    public async me(@CurrentUser() user: User):Promise<User>{
+        return user;
+    }
+
+    @Mutation(() => User)
+    @UseGuards(AuthGuardJwtGql)
+    async edit(
+        @Args('id') id:number, @Args('input')input: EditUserInput
+    ):Promise<User>{
+
+        return this.authService.edit(id, input);
+    }
 }

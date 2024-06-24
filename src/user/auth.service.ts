@@ -6,6 +6,7 @@ import { PrismaService } from "prisma/prisma.service";
 import { JwtService } from "@nestjs/jwt";
 import { AuthPayload } from "src/auth/auth.payload";
 import { LoginUserInput } from "src/input/login-user.input";
+import { EditUserInput } from "src/input/edit-user.input";
 
 @Injectable()
 export class AuthService{
@@ -46,30 +47,51 @@ export class AuthService{
 
         const newUser = await this.createNewUser(input);
         const token = this.generateJwtTokenForUser(newUser);
-
+        
         return{
             access_token: token,
             user: newUser
         }
     }
 
-    async validateUser(email: string, password: string):Promise<User>{
-        const user = await this.prisma.user.findFirst({
-            where: {email: email}
+    async validateUser(user: LoginUserInput):Promise<User>{
+
+        const currentUser = await this.prisma.user.findUnique({
+            where: { username: user.username }
         })
 
+        if(!currentUser){
+            this.logger.debug("This user does not exist")
+            throw new UnauthorizedException()
+        }
+
+        return currentUser;
+    }
+
+    async login(data:LoginUserInput):Promise<AuthPayload>{
+        
+        const user = await this.validateUser(data)
         const token = this.generateJwtTokenForUser(user)
 
-        if(!user){
-            this.logger.debug(`this user does not exist`)
+        const isPasswordValid = await bcrypt.compare(data.password, user.password);
+
+        if (!isPasswordValid) {
+            this.logger.debug('Invalid email or password')
             throw new UnauthorizedException();
         }
-        if(!bcrypt.compare(password, user.password)){
-            this.logger.debug(`invalid password`)
-            throw new UnauthorizedException();
+
+        return {
+            access_token: token,
+            user
         }
-        
-        return user
+    }
+
+    async edit(id: number, input:EditUserInput):Promise<User>{
+
+        return this.prisma.user.update({
+            where:{id},
+            data: input
+        });
     }
 
     async findAllUsers():Promise<User[]>{
@@ -79,6 +101,18 @@ export class AuthService{
     async findUserById(id: number):Promise<User>{
         return this.prisma.user.findFirstOrThrow({
             where: {id}
+        })
+    }
+
+    async findUserByEmail(email: string):Promise<User>{
+        return this.prisma.user.findFirstOrThrow({
+            where:{email: email}
+        })
+    }
+
+    async findUserByUsername(username: string):Promise<User>{
+        return this.prisma.user.findFirst({
+            where: {username: username}
         })
     }
 }

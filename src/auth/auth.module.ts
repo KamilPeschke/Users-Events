@@ -5,6 +5,7 @@ import { AuthService } from 'src/user/auth.service';
 import { UserResolver } from 'src/user/user.resolver';
 import { JwtStrategy } from './jwt.strategy';
 import { PassportModule } from '@nestjs/passport';
+import { LocalStrategy } from './local.strategy';
 
 @Module({
     imports:[
@@ -16,6 +17,6 @@ import { PassportModule } from '@nestjs/passport';
                     expiresIn: '60m'
                 }
             })],
-    providers:[UserResolver,AuthService,PrismaService, JwtStrategy]
+    providers:[UserResolver,AuthService,PrismaService,JwtStrategy,LocalStrategy]
 })
 export class AuthModule {}
