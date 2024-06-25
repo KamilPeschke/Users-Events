@@ -8,26 +8,25 @@ import { ConfigModule } from '@nestjs/config';
 import { PrismaService } from '../prisma/prisma.service';
 import { PrismaModule } from 'prisma/prisma.module';
 import { AuthModule } from './auth/auth.module';
-import { JwtStrategy } from './auth/jwt.strategy';
-import { AuthService } from './user/auth.service';
+import { UserRepository } from './user/repo/user.repository';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      envFilePath:['.env']
-    })
-    ,GraphQLModule.forRoot<ApolloDriverConfig>({
+      envFilePath: ['.env'],
+    }),
+    GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,
       autoSchemaFile: true,
       playground: true,
-      context: ({ req }) => ({ req })
-    })
-    , UserModule, 
-      PrismaModule, 
-      AuthModule,
+      context: ({ req }) => ({ req }),
+    }),
+    UserModule,
+    PrismaModule,
+    AuthModule,
   ],
   controllers: [AppController],
-  providers: [AppService, PrismaService],
+  providers: [AppService, PrismaService, UserRepository],
 })
 export class AppModule {}

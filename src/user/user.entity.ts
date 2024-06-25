@@ -1,28 +1,20 @@
-import { Field, ObjectType } from "@nestjs/graphql";
-import { Event } from "src/events/event.entity";
-import { Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { Field, Int, ObjectType } from '@nestjs/graphql';
+import { Event } from 'src/events/event.entity';
 
-@Entity()
 @ObjectType()
-export class User{
+export class User {
+  @Field(() => Int)
+  id: number;
 
-    // constructor(partial?: Partial<User>){
-    //     Object.assign(this,partial);
-    // }
+  @Field()
+  email: string;
 
-    @PrimaryGeneratedColumn()
-    id: number;
+  @Field()
+  username: string;
 
-    @Field()
-    email: string;
+  @Field()
+  password: string;
 
-    @Field()
-    username: string;
-
-    @Field()
-    password: string;
-
-    @Field(() => [Event])
-    @OneToMany(() => Event, (event) => event.users)
-    event?: Promise<Event[]>
+  @Field(() => [Event])
+  event?: Promise<Event[]>;
 }
