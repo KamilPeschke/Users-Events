@@ -5,3 +5,5 @@ export enum EventStatus {
   MAYBE,
   REJECTED,
 }
+
+registerEnumType(EventStatus, { name: 'Status' });

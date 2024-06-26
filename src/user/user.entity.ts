@@ -15,6 +15,9 @@ export class User {
   @Field()
   password: string;
 
-  @Field(() => [Event])
+  @Field(() => [Event], { nullable: true })
   event?: Promise<Event[]>;
+
+  @Field(() => [Event], { nullable: true })
+  organized?: Promise<Event[]>;
 }

@@ -14,16 +14,28 @@ datasource db {
   directUrl = env("DIRECT_URL")
 }
 
+enum EventStatus {
+  ACCEPTED
+  MAYBE
+  REJECTED
+}
+
 model User {
-  id       Int     @id @default(autoincrement())
-  username String  @unique
-  password String
-  email    String  @unique
-  Event    Event[]
+  id        Int     @id @default(autoincrement())
+  username  String  @unique
+  password  String
+  email     String  @unique
+  event     Event[] @relation("UserEvents")
+  organized Event[] @relation("UserOrganizedEvents")
 }
 
 model Event {
-  id          Int    @id @default(autoincrement())
+  id          Int         @id @default(autoincrement())
   description String
-  users       User   @relation(fields: [id], references: [id])
+  status      EventStatus
+  location    String
+  userId      Int
+  users       User[]      @relation("UserEvents")
+  organizerId Int
+  organizer   User        @relation(fields: [organizerId], references: [id], name: "UserOrganizedEvents")
 }
