@@ -11,7 +11,6 @@ import { LoginUserInput } from 'src/user/input/login-user.input';
 import { EditUserInput } from 'src/user/input/edit-user.input';
 import { DeleteUserInput } from 'src/user/input/delete-user.input';
 import { UserService } from './service/user.service';
-import { AuthGuardlocalGql } from 'src/auth/auth.guard.local.gql';
 
 @Resolver()
 export class UserResolver {
@@ -68,7 +67,7 @@ export class UserResolver {
   }
 
   @Mutation(() => User)
-  @UseGuards(AuthGuardlocalGql)
+  @UseGuards(AuthGuardJwtGql)
   async edit(
     @Args('id') id: number,
     @Args('input') input: EditUserInput,
@@ -82,7 +81,7 @@ export class UserResolver {
   }
 
   @Mutation(() => DeleteUserEntity)
-  @UseGuards(AuthGuardlocalGql)
+  @UseGuards(AuthGuardJwtGql)
   async delete(@Args('data') data: DeleteUserInput): Promise<DeleteUserEntity> {
     return this.userService.delete(data.id);
   }

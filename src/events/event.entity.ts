@@ -12,8 +12,11 @@ export class Event {
   @Field()
   location: string;
 
+  @Field()
+  date: Date;
+
   @Field(() => [User], { nullable: true, name: 'Attendance' })
-  users?: Promise<User[]>;
+  users?: User[];
 
   @Field()
   userId?: number;

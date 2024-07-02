@@ -4,7 +4,6 @@ import { PrismaService } from 'prisma/prisma.service';
 import { UserResolver } from 'src/user/user.resolver';
 import { JwtStrategy } from './jwt.strategy';
 import { PassportModule } from '@nestjs/passport';
-import { LocalStrategy } from './local.strategy';
 import { UserRepository } from 'src/user/repo/user.repository';
 import { AuthService } from './service/auth.service';
 import { UserService } from 'src/user/service/user.service';
@@ -24,7 +23,6 @@ import { UserService } from 'src/user/service/user.service';
     AuthService,
     PrismaService,
     JwtStrategy,
-    LocalStrategy,
     UserRepository,
     UserService,
   ],

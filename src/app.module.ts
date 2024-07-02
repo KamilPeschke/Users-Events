@@ -10,8 +10,8 @@ import { PrismaModule } from 'prisma/prisma.module';
 import { AuthModule } from './auth/auth.module';
 import { UserRepository } from './user/repo/user.repository';
 import { EventRepository } from './events/repo/event.repository';
-import { EventService } from './events/event.service';
 import { EventResolver } from './events/event.resolver';
+import { EventService } from './events/service/event.service';
 
 @Module({
   imports: [

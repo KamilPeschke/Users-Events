@@ -34,6 +34,7 @@ model Event {
   description String
   status      EventStatus
   location    String
+  date        DateTime
   userId      Int
   users       User[]      @relation("UserEvents")
   organizerId Int

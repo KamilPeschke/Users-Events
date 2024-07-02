@@ -1,6 +1,6 @@
 import { Field, InputType } from '@nestjs/graphql';
 
-import { IsString } from 'class-validator';
+import { IsDate, IsString } from 'class-validator';
 
 @InputType()
 export class CreateEventInput {
@@ -9,9 +9,10 @@ export class CreateEventInput {
   location: string;
 
   @Field()
-  userId: number;
-
-  @Field()
   @IsString()
   description?: string;
+
+  @Field()
+  @IsDate()
+  date: Date;
 }

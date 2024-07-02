@@ -27,7 +27,11 @@ export class UserRepository {
   ) {
     return this.prisma.user.update({
       where: { id },
-      data: { email: email, username: username, password: password },
+      data: {
+        email: email,
+        username: username,
+        password: password,
+      },
     });
   }
 
