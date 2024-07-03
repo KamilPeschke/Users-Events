@@ -32,12 +32,23 @@ export class EventService {
   }
 
   async editEvent(
+    currentUser: number,
     id: number,
     location?: string,
     date?: Date,
     description?: string,
   ): Promise<Event> {
-    return await this.eventRepository.edit(id, location, date, description);
+    return await this.eventRepository.edit(
+      currentUser,
+      id,
+      location,
+      date,
+      description,
+    );
+  }
+
+  async delete(id: number) {
+    return await this.eventRepository.delete(id);
   }
 
   async changeDecision(eventId: number, userId: number, answer: EventStatus) {

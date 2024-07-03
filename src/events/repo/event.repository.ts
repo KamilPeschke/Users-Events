@@ -1,4 +1,8 @@
-import { HttpStatus, NotFoundException } from '@nestjs/common';
+import {
+  HttpStatus,
+  NotFoundException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { ObjectType } from '@nestjs/graphql';
 import { EventStatus } from '@prisma/client';
 import { PrismaService } from 'prisma/prisma.service';
@@ -14,6 +18,18 @@ export class EventRepository {
     organizer: User,
     description?: string,
   ) {
+    await this.prisma.user.update({
+      where: {
+        id: organizer.id,
+      },
+      data: {
+        role: 'ADMIN',
+      },
+      include: {
+        event: true,
+      },
+    });
+
     return await this.prisma.event.create({
       data: {
         description: description,
@@ -30,10 +46,24 @@ export class EventRepository {
     });
   }
 
-  async edit(id: number, location?: string, date?: Date, description?: string) {
+  async edit(
+    currentUser: number,
+    id: number,
+    location?: string,
+    date?: Date,
+    description?: string,
+  ) {
+    const user = await this.prisma.user.findFirst({
+      where: { id: currentUser },
+    });
+
     const event = await this.prisma.event.findFirst({
       where: { id },
     });
+
+    if (event.organizerId !== user.id) {
+      throw new UnauthorizedException('You cant edit this event');
+    }
 
     if (!event) {
       throw new NotFoundException('This event does not exist');
@@ -52,7 +82,6 @@ export class EventRepository {
     return await this.prisma.event.update({
       where: { id: eventId },
       data: {
-        status: EventStatus.ACCEPTED,
         users: {
           connect: {
             id: userId,
@@ -85,6 +114,12 @@ export class EventRepository {
       data: {
         status: answer,
       },
+    });
+  }
+
+  async delete(id: number) {
+    return await this.prisma.event.delete({
+      where: { id },
     });
   }
 

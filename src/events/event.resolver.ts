@@ -9,7 +9,7 @@ import { User } from 'src/user/user.entity';
 import { EventService } from './service/event.service';
 import { EditEventInput } from './input/edit-event.input';
 import { EventStatus } from '@prisma/client';
-// import { AttendInput } from './input/attend.input';
+import { RolesGuard } from 'src/auth/admin.guard';
 
 @Resolver(() => Event)
 export class EventResolver {
@@ -35,12 +35,14 @@ export class EventResolver {
   }
 
   @Mutation(() => Event)
-  @UseGuards(AuthGuardJwtGql)
+  @UseGuards(AuthGuardJwtGql, RolesGuard)
   editEvent(
     @Args('id') id: number,
+    @CurrentUser() user: User,
     @Args('input') input: EditEventInput,
   ): Promise<Event> {
     return this.eventService.editEvent(
+      user.id,
       id,
       input.location,
       input.date,
@@ -58,13 +60,10 @@ export class EventResolver {
     return this.eventService.changeDecision(eventId, user.id, answer);
   }
 
-  // @Mutation(() => Event)
-  // attend(
-  //   @Args('input') input: AttendInput,
-  //   @CurrentUser() currentUser: User,
-  // ): Promise<Event> {
-  //   return this.eventService.attend(input.eventId, currentUser.id);
-  // }
+  @Mutation(() => Event)
+  deleteEvent(@Args('id') id: number): Promise<Event> {
+    return this.eventService.delete(id);
+  }
 
   @Query(() => [Event])
   findAllEvents(): Promise<Event[]> {
