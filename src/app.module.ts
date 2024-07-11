@@ -1,17 +1,14 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { UserModule } from './user/user.module';
 import { GraphQLModule } from '@nestjs/graphql';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { ConfigModule } from '@nestjs/config';
 import { PrismaService } from '../prisma/prisma.service';
 import { PrismaModule } from 'prisma/prisma.module';
-import { AuthModule } from './auth/auth.module';
-import { UserRepository } from './user/repo/user.repository';
-import { EventRepository } from './events/repo/event.repository';
-import { EventResolver } from './events/event.resolver';
-import { EventService } from './events/service/event.service';
+import { AuthModule } from './infrastructure/modules/auth.module';
+import { UserModule } from './infrastructure/modules/user.module';
+import { EventModule } from './infrastructure/modules/event.module';
 
 @Module({
   imports: [
@@ -28,16 +25,9 @@ import { EventService } from './events/service/event.service';
     UserModule,
     PrismaModule,
     AuthModule,
+    EventModule,
   ],
   controllers: [AppController],
-  providers: [
-    AppService,
-    PrismaService,
-    UserRepository,
-    EventRepository,
-    EventService,
-    EventResolver,
-    EventRepository,
-  ],
+  providers: [AppService, PrismaService],
 })
 export class AppModule {}

@@ -24,7 +24,7 @@ export class RolesGuard implements CanActivate {
     });
 
     if (!dbUser || dbUser.role !== 'ADMIN') {
-      throw new ForbiddenException("You can't edit this event");
+      throw new ForbiddenException('Only ADMIN can do this action');
     }
 
     return true;
